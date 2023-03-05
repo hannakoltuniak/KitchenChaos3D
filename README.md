@@ -4,7 +4,7 @@
 
 "Kitchen Chaos" is a simple 3D Unity game that I created as a way to learn and improve my game development skills. In this game, you'll take on the role of a chef who receives orders from customers and must prepare each dish using the appropriate ingredients. Now you can only prepare burgers, but I'm planning to add more recipes.
 
-The concept of this game is inspired by the popular "Cooking Simulator" by Big Cheese Studio, and I decided to create my own version of it as a way to challenge myself and put my own spin on the gameplay mechanics.
+The concept of this game is inspired by the popular "Overcooked" by Ghost Town Games, and I decided to create my own version of it as a way to challenge myself and put my own spin on the gameplay mechanics.
 
 ![g (1)](https://user-images.githubusercontent.com/113022023/222715944-a035b7ca-06b1-47e5-b826-495b40a657b0.gif)
 
