@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static CuttingCounter;
 
-public class Stove : BaseCounter
+public class Stove : BaseCounter, IHasProgress
 {
+    public event EventHandler<IHasProgress.OnProgressChangedEventArgs> OnProgressChanged;
     public event EventHandler<OnStateChangedEventArgs> OnStateChanged;
     public class OnStateChangedEventArgs : EventArgs
     {
@@ -46,6 +47,11 @@ public class Stove : BaseCounter
                 case State.Frying:
                     fryingTimer += Time.deltaTime;
 
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                    {
+                        progressNormalized = fryingTimer / fryingRecipeSO.fryingTimerMax
+                    });
+
                     if (fryingTimer > fryingRecipeSO.fryingTimerMax)
                     {
                         fryingTimer = 0f;
@@ -66,6 +72,11 @@ public class Stove : BaseCounter
                 case State.Fried:
                     burningTimer += Time.deltaTime;
 
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                    {
+                        progressNormalized = burningTimer / burningRecipeSO.burningTimerMax
+                    });
+
                     if (burningTimer > burningRecipeSO.burningTimerMax)
                     {
                         burningTimer = 0f;
@@ -81,12 +92,17 @@ public class Stove : BaseCounter
                         {
                             state = state,
                         });
+
+                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                        {
+                            progressNormalized = 0f
+                        });
                     }
                     break;
                 case State.Burned:
                     break;
             }
-            Debug.Log(state);
+            //Debug.Log(state);
         }
     }
 
@@ -109,6 +125,11 @@ public class Stove : BaseCounter
                     {
                         state = state,
                     });
+
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                    {
+                        progressNormalized = fryingTimer / fryingRecipeSO.fryingTimerMax
+                    }); ;
                 }
             }
             else
@@ -116,14 +137,33 @@ public class Stove : BaseCounter
 
             }
         }
-        else
+        else //there is a kitchenobject here
         {
             if (player.HasKitchenObject())
             {
+                //player is carrying smth
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
+                {
+                    //GetKitchenObject().DestroySelf();
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKichenObjectSO()))
+                        GetKitchenObject().DestroySelf(); 
 
+                    state = State.Idle;
+
+                    OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                    {
+                        state = state,
+                    });
+
+                    OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                    {
+                        progressNormalized = 0f
+                    });
+                }
             }
             else
             {
+                //player isn't carrying anything
                 GetKitchenObject().SetKitchenObjectParent(player);
 
                 state = State.Idle;
@@ -131,6 +171,11 @@ public class Stove : BaseCounter
                 OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
                 {
                     state = state,
+                });
+
+                OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                {
+                    progressNormalized = 0f
                 });
             }
         }

@@ -8,7 +8,8 @@ using System;
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
     public static Player Instance { get; private set; }
-    
+
+    public event EventHandler OnPickedSomething;
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
@@ -30,7 +31,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     private void Awake()
     {
         if (Instance != null)
-            Debug.LogError("There is more than one Player instance");
+            Debug.LogError("There is more than one Player Instance");
 
         Instance = this;
     }
@@ -54,18 +55,20 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteractAction(object sender, System.EventArgs e)
     {
+        if (!GameManager.Instance.IsGamePlaying())
+            return;
+
         if (selectedCounter != null)
-        {
             selectedCounter.Interact(this);
-        }
     }
 
     private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
     {
+        if (!GameManager.Instance.IsGamePlaying())
+            return;
+
         if (selectedCounter != null)
-        {
             selectedCounter.InteractAlternate(this);
-        }
     }
     
     private void Interactions()
@@ -118,7 +121,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
             //X
             Vector3 moveDirX = new Vector3(moveDir.x, 0, 0).normalized;
-            canMove = /*moveDir.x != 0 && */!Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeigth, playerRadius, moveDirX, moveDis);
+            canMove = moveDir.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeigth, playerRadius, moveDirX, moveDis);
 
             if (canMove)
             {
@@ -132,7 +135,7 @@ public class Player : MonoBehaviour, IKitchenObjectParent
 
                 //movement on Z
                 Vector3 moveDirZ = new Vector3(0, 0, moveDir.z).normalized;
-                canMove =/* moveDir.z != 0 && */!Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeigth, playerRadius, moveDirX, moveDis);
+                canMove = moveDir.y != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeigth, playerRadius, moveDirX, moveDis);
 
                 if (canMove)
                 {
@@ -178,6 +181,9 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject)
     {
         this.kitchenObject= kitchenObject;
+
+        if (kitchenObject != null)
+            OnPickedSomething?.Invoke(this, EventArgs.Empty);
     }
 
     public KitchenObject GetKitchenObject()

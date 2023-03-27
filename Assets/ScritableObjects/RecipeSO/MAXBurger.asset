@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436af43dcbe37034db8190d1f3b42751, type: 3}
+  m_Name: MAXBurger
+  m_EditorClassIdentifier: 
+  kitchenObjectSOList:
+  - {fileID: 11400000, guid: 1fdc1cea76004104684bba98565dbeed, type: 2}
+  - {fileID: 11400000, guid: 385543c4a6f441c4ca3c489b3969d117, type: 2}
+  - {fileID: 11400000, guid: 317cab29e09481740a4055452ee9d184, type: 2}
+  - {fileID: 11400000, guid: bffd1d5288facf649864fc44df006d6f, type: 2}
+  - {fileID: 11400000, guid: d6e7639d7e19e4949a10e8fed5a05193, type: 2}
+  recipeName: MAXBurger
